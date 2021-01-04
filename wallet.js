@@ -64,11 +64,11 @@ const WALLET_NAME = "wallet";
 async function run() {
   let a = new Wallet(bjl.networks.testnet);
 
-  const addresses = a.address_list(config.XPUB, 0, 0, 2);
+  const addresses = a.address_list(config.XPUB, 0, 0, 5);
   console.log(addresses);
 
-  let wallet = await blockcypher.listWallet();
-  console.log(wallet);
+  //let wallet = await blockcypher.listWallet();
+  //console.log(wallet);
 
   //let wallet = await a.add_wallet(WALLET_NAME, addresses);
   //console.log(wallet);
@@ -79,8 +79,8 @@ async function run() {
   //wallet = await a.add_addresses(WALLET_NAME, addresses);
   //console.log(wallet);
 
-  //let utxo = await a.fetch_utxo(addresses[0]);
-  //console.log(utxo);
+  let utxo = await a.fetch_utxo(addresses[0]);
+  console.log(utxo);
 }
 
 run();

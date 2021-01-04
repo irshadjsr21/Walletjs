@@ -1,7 +1,7 @@
 const axios = require("axios");
 const config = require("./config");
 
-const BASE_URL = "https://api.blockcypher.com/v1/btc/main/";
+const BASE_URL = "https://api.blockcypher.com/v1/btc/test3/";
 
 const http = axios.create({ baseURL: BASE_URL });
 

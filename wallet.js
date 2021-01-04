@@ -15,10 +15,11 @@ class Wallet {
     const addresses = [];
 
     for (let i = start; i <= end; i++) {
-      const key = bip32.fromBase58(xpub).derivePath(`${chain}/${i}`).publicKey;
+      const key = bip32.fromBase58(xpub, this.network).derivePath(`${chain}/${i}`).publicKey;
 
       const res = bjl.payments.p2pkh({
-        pubkey: key
+        pubkey: key,
+        network: this.network
       });
 
       addresses.push(res.address);
@@ -47,7 +48,9 @@ class Wallet {
 
   //this function will fetch the "addresses" from blockcypher database of an already existing wallet recognised by the "name" argument.
 
-  async fetch_utxo(recieve, change) {}
+  async fetch_utxo(recieve, change) {
+    return await blockcypher.getUTXO(recieve);
+  }
 
   //this function will fetch "UTXOs" using wallet name provided in "receive" and "change" argumnets using blockcypher APIs
 
@@ -56,17 +59,28 @@ class Wallet {
   //this fucntion will generate unsigned txn using "xpub" to send "amount" to "output_address"
 }
 
+const WALLET_NAME = "wallet";
+
 async function run() {
   let a = new Wallet(bjl.networks.testnet);
 
-  const addresses = a.address_list(config.XPUB, 0, 3, 5);
+  const addresses = a.address_list(config.XPUB, 0, 0, 2);
   console.log(addresses);
-  //const wallet = await a.add_wallet("new-wallet", addresses);
+
+  let wallet = await blockcypher.listWallet();
+  console.log(wallet);
+
+  //let wallet = await a.add_wallet(WALLET_NAME, addresses);
   //console.log(wallet);
-  let wallet = await a.fetch_wallet("new-wallet");
-  console.log(wallet);
-  wallet = await a.add_addresses("new-wallet", addresses);
-  console.log(wallet);
+
+  //wallet = await a.fetch_wallet(WALLET_NAME);
+  //console.log(wallet);
+
+  //wallet = await a.add_addresses(WALLET_NAME, addresses);
+  //console.log(wallet);
+
+  //let utxo = await a.fetch_utxo(addresses[0]);
+  //console.log(utxo);
 }
 
 run();

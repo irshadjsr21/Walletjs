@@ -20,6 +20,17 @@ module.exports = {
     }
   },
 
+  listWallet: async () => {
+    try {
+      const res = await http.get(`wallets?token=${config.NETWORK_TOKEN}`);
+
+      return res.data;
+    } catch (error) {
+      console.log(error.toJSON());
+      return null;
+    }
+  },
+
   getWallet: async name => {
     try {
       const res = await http.get(
@@ -41,6 +52,17 @@ module.exports = {
           addresses
         }
       );
+
+      return res.data;
+    } catch (error) {
+      console.log(error.toJSON());
+      return null;
+    }
+  },
+
+  getUTXO: async address => {
+    try {
+      const res = await http.get(`addrs/${address}?unspentOnly=true`);
 
       return res.data;
     } catch (error) {

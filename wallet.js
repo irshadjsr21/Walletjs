@@ -1,9 +1,9 @@
 const bjl = require("bitcoinjs-lib");
 const bip32 = require("bip32");
-const axios = require("axios");
 const coinselect = require("coinselect");
 
 const config = require("./config");
+const blockcypher = require("./blockcypher");
 
 class Wallet {
   constructor(network) {
@@ -29,17 +29,21 @@ class Wallet {
 
   // this function will generate bitcoin testnet addresses using "xpub" for "chain" index = 0 or 1 from range index "start" to "end".
 
-  add_wallet(name, addresses) {
-
+  async add_wallet(name, addresses) {
+    return await blockcypher.createWallet(name, addresses);
   }
 
   // this function will add the "addresses" list on blockcypher database. This list is recognised by the "name" argument.
 
-  add_addresses(name, addresses) {}
+  async add_addresses(name, addresses) {
+    return await blockcypher.addAddresses(name, addresses);
+  }
 
   //this function will add the "addresses" on blockcypher database to an already existing wallet recognised by the "name" argument.
 
-  async fetch_wallet(name) {}
+  async fetch_wallet(name) {
+    return await blockcypher.getWallet(name);
+  }
 
   //this function will fetch the "addresses" from blockcypher database of an already existing wallet recognised by the "name" argument.
 
@@ -52,13 +56,17 @@ class Wallet {
   //this fucntion will generate unsigned txn using "xpub" to send "amount" to "output_address"
 }
 
-let a = new Wallet(bjl.networks.testnet);
+async function run() {
+  let a = new Wallet(bjl.networks.testnet);
 
-console.log(
-  a.address_list(
-    config.XPUB,
-    0,
-    0,
-    1
-  )
-);
+  const addresses = a.address_list(config.XPUB, 0, 3, 5);
+  console.log(addresses);
+  //const wallet = await a.add_wallet("new-wallet", addresses);
+  //console.log(wallet);
+  let wallet = await a.fetch_wallet("new-wallet");
+  console.log(wallet);
+  wallet = await a.add_addresses("new-wallet", addresses);
+  console.log(wallet);
+}
+
+run();
